@@ -13,10 +13,11 @@ Should contain two variables:
 tau and rho, both Floats, to store the natural parameters of the gaussian.
 """
 struct Gaussian1D
-    ##TODO##
+    tau::Float64
+    rho::Float64
 
     # default constructor
-    Gaussian1D(tau, rho) = ##TODO##
+    Gaussian1D(tau, rho) = rho < 0 ? error("negative precision") : new(tau, rho)
 end
 # Initializes a standard Gaussian 
 Gaussian1D() = Gaussian1D(0, 1)
@@ -26,7 +27,7 @@ Gaussian1D() = Gaussian1D(0, 1)
 
 Initializes a Gaussian from mean and variance.
 """
-Gaussian1DFromMeanVariance(μ, σ2) = ##TODO##
+Gaussian1DFromMeanVariance(μ, σ2) = Gaussian1D(μ / σ2, 1 / σ2)
 
 """
     mean(g)
@@ -40,7 +41,7 @@ julia> mean(Gaussian1DFromMeanVariance(1,2))
 1.0
 ```
 """
-mean(g::Gaussian1D) = ##TODO##
+mean(g::Gaussian1D) = g.tau / g.rho
 
 """
     variance(g)
@@ -54,7 +55,7 @@ julia> variance(Gaussian1DFromMeanVariance(1,2))
 2.0
 ```
 """
-variance(g::Gaussian1D) = ##TODO##
+variance(g::Gaussian1D) = 1 / g.rho
 
 
 """
@@ -70,7 +71,7 @@ julia> absdiff(Gaussian1D(0,1),Gaussian1D(0,3))
 1.4142135623730951
 ```
 """
-absdiff(g1::Gaussian1D, g2::Gaussian1D) = ##TODO##
+absdiff(g1::Gaussian1D, g2::Gaussian1D) = max(abs(g1.tau - g2.tau), sqrt(abs(g1.rho - g2.rho)))
 
 """
     *(g1,g2)
@@ -83,7 +84,7 @@ julia> Gaussian1D() * Gaussian1D()
 ```
 """
 function Base.:*(g1::Gaussian1D, g2::Gaussian1D)
-    ##TODO##
+    Gaussian1D(g1.tau + g2.tau, g1.rho + g2.rho)
 end
 
 """
@@ -97,7 +98,7 @@ julia> Gaussian1D(0,1) / Gaussian1D(0,0.5)
 ```
 """
 function Base.:/(g1::Gaussian1D, g2::Gaussian1D)
-    ##TODO##
+    Gaussian1D(g1.tau - g2.tau, g1.rho - g2.rho)
 end
 
 """
@@ -113,7 +114,7 @@ c = 0.28209479177387814
 ```
 """
 function logNormProduct(g1::Gaussian1D, g2::Gaussian1D)
-    ##TODO##
+    log(N(mean(g1), mean(g2), (variance(g1) + variance(g2))))
 end
 
 """
@@ -129,7 +130,10 @@ julia> logNormRatio(Gaussian1D(0,1) / Gaussian1D(0,0.5))
 ```
 """
 function logNormRatio(g1::Gaussian1D, g2::Gaussian1D)
-    ##TODO##
+    if g1.rho == g2.rho
+        return 0.0
+    end
+    -log(N((g1.tau - g2.tau) / (g1.rho - g2.rho), g2.tau / g2.rho, 1 / (g1.rho - g2.rho) + 1 / g2.rho))
 end
 
 """
@@ -143,4 +147,8 @@ function Base.show(io::IO, g::Gaussian1D)
     else
         print(io, "μ = ", mean(g), ", σ = ", sqrt(variance(g)))
     end
+end
+
+function N(x, μ, σ2)
+    (1 / √(2*π*σ2) * exp((-1 / 2) * ((x - μ)^2 / σ2)))
 end
