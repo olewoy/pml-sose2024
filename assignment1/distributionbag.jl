@@ -18,10 +18,11 @@ Please note that the tests in this file might only run after everything is atlea
 complete for the tests to run nicely.
 """
 struct DistributionBag{T} <: AbstractArray{T, 1}
-    ##TODO##
+    uniform::T
+    bag::Vector{T}
     # default constructor
     # Should store the example given as uniform distribution and initialize the bag with a Vector of Type T using the specification (undef, 0) (Which creates an empty vector)
-    DistributionBag{T}(uniform::T) where {T} = ##TODO##
+    DistributionBag{T}(uniform::T) where {T} = new(uniform, Vector{T}(undef, 0))
 end
 
 """
@@ -41,7 +42,7 @@ julia> DistributionBag(Discrete(5))
 0-element DistributionBag{Discrete{5}}
 ```
 """
-DistributionBag(uniform::T) where {T} = ##TODO##
+DistributionBag(uniform::T) where {T} = DistributionBag{T}(uniform)
 
 """
     add(db::DistributionBag{T})
@@ -63,7 +64,8 @@ Uniform:  P = [0.2, 0.2, 0.2, 0.2, 0.2]
 ```
 """
 function add!(db::DistributionBag{T}) where {T}
-    ##TODO##
+    db.bag = push!(db.bag, db.uniform)
+    length(db.bag)
 end
 
 """
