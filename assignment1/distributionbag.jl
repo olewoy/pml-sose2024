@@ -194,7 +194,7 @@ julia> db[begin]
  P = [0.0704547896272078, 0.19151597437154377, 0.19151597437154377, 0.5205943929937957, 0.025918868635908737]
 ```
 """
-Base.firstindex(db::DistributionBag{T}) where {T} = db.bag[begin]
+Base.firstindex(db::DistributionBag{T}) where {T} = 1
 
 """
     lastindex(db::DistributionBag{T})
@@ -230,7 +230,7 @@ julia> db[end]
  P = [0.2, 0.2, 0.2, 0.2, 0.2]
 ```
 """
-Base.lastindex(db::DistributionBag{T}) where {T} = db.bag[end]
+Base.lastindex(db::DistributionBag{T}) where {T} = length(db.bag)
 
 """
     size(db::DistributionBag{T})
