@@ -17,7 +17,7 @@ bag: A Vector of type T, which stores the actual bag.
 Please note that the tests in this file might only run after everything is atleast partly implemented, as the iterator needs to be
 complete for the tests to run nicely.
 """
-struct DistributionBag{T} <: AbstractArray{T, 1}
+mutable struct DistributionBag{T} <: AbstractArray{T, 1}
     uniform::T
     bag::Vector{T}
     # default constructor
@@ -64,7 +64,7 @@ Uniform:  P = [0.2, 0.2, 0.2, 0.2, 0.2]
 ```
 """
 function add!(db::DistributionBag{T}) where {T}
-    db.bag = push!(db.bag, db.uniform)
+    push!(db.bag, db.uniform)
     length(db.bag)
 end
 
@@ -102,7 +102,7 @@ Uniform:  P = [0.2, 0.2, 0.2, 0.2, 0.2]
 ```
 """
 function reset!(db::DistributionBag{T}) where {T}
-    ##TODO##
+    fill!(db.bag, db.uniform)
 end
 
 """
@@ -127,7 +127,7 @@ julia> db[1]
  P = [0.2, 0.2, 0.2, 0.2, 0.2]
 ```
 """
-Base.getindex(db::DistributionBag{T}, i::Int64) where {T} = ##TODO##
+Base.getindex(db::DistributionBag{T}, i::Int64) where {T} = db.bag[i]
 
 """
     setindex(db::DistributionBag{T},d::T,i::Int64)
@@ -157,7 +157,7 @@ Uniform:  P = [0.2, 0.2, 0.2, 0.2, 0.2]
 ```
 """
 function Base.setindex!(db::DistributionBag{T}, d::T, i::Int64) where {T}
-    ##TODO##
+    db.bag[i] = d
 end
 
 """
@@ -194,7 +194,7 @@ julia> db[begin]
  P = [0.0704547896272078, 0.19151597437154377, 0.19151597437154377, 0.5205943929937957, 0.025918868635908737]
 ```
 """
-Base.firstindex(db::DistributionBag{T}) where {T} = ##TODO##
+Base.firstindex(db::DistributionBag{T}) where {T} = db.bag[begin]
 
 """
     lastindex(db::DistributionBag{T})
@@ -230,7 +230,7 @@ julia> db[end]
  P = [0.2, 0.2, 0.2, 0.2, 0.2]
 ```
 """
-Base.lastindex(db::DistributionBag{T}) where {T} = ##TODO##
+Base.lastindex(db::DistributionBag{T}) where {T} = db.bag[end]
 
 """
     size(db::DistributionBag{T})
@@ -254,7 +254,7 @@ julia> size(db)
 
 ```
 """
-Base.size(db::DistributionBag{T}) where {T} = ##TODO##
+Base.size(db::DistributionBag{T}) where {T} = size(db.bag)
 
 """
     IndexStyle(db::DistributionBag{T})
@@ -279,7 +279,7 @@ Discrete{5}
 
 ```
 """
-Base.eltype(::Type{<:DistributionBag{T}}) where {T} = ##TODO##
+Base.eltype(::Type{<:DistributionBag{T}}) where {T} = T
 
 """
     iterate(db::DistributionBag, i=1)
@@ -318,7 +318,7 @@ julia> for d in db
  P = [0.2, 0.2, 0.2, 0.2, 0.2]     
  ```
 """
-Base.iterate(db::DistributionBag{T}, i=1) where {T} = ##TODO##
+Base.iterate(db::DistributionBag{T}, i=1) where {T} = iterate(db.bag)
 
 """
     show(io,db::DistributionBag{T})
