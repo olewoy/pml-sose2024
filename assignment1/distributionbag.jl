@@ -17,7 +17,7 @@ bag: A Vector of type T, which stores the actual bag.
 Please note that the tests in this file might only run after everything is atleast partly implemented, as the iterator needs to be
 complete for the tests to run nicely.
 """
-mutable struct DistributionBag{T} <: AbstractArray{T, 1}
+struct DistributionBag{T} <: AbstractArray{T, 1}
     uniform::T
     bag::Vector{T}
     # default constructor
